@@ -25,16 +25,28 @@ namespace :tarski do
   desc "Generate a new changelog HTML file."
   task :changelog do
     require 'bluecloth'
+    require 'hpricot'
     
-    %x{svn export http://tarski.googlecode.com/svn/releases/#{version} tarski}
+    # %x{svn export http://tarski.googlecode.com/svn/trunk tarski}
     
     File.open("tarski/CHANGELOG", "r") do |f|
-      bc = BlueCloth::new(f.read)
+      doc = Hpricot(BlueCloth::new(f.read).to_html)
+      versions = Array.new
+      
+      (doc/"h3").each do |header|
+        version = header.inner_html.scan(/^Version (\d\.\d\.\d|\d\.\d)/).first
+        header.set_attribute('id', version)
+        versions << version
+      end
+      
+      puts doc.class
+      versions.each {|v| puts v }
+      
       changelog = File.open("public_html/changelog.html", "w+")
-      changelog.puts(bc.to_html)
+      changelog.puts(doc.to_html)
     end
     
-    %x{rm -rf tarski}
+    # %x{rm -rf tarski}
   end
   
   desc "Create a zip file of the lastest release in the downloads directory."
