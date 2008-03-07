@@ -13,7 +13,7 @@ end
 
 namespace :tarski do
   
-  desc "Runs a full version update. By default a new release is not tagged in svn."
+  desc "Runs a full version update. By default a new release is not tagged in the Subversion repository."
   task :update => [:zip_release, :feed]
   
   desc "Update the version feed to notify Tarski users of the new release."
