@@ -22,14 +22,19 @@ namespace :tarski do
     TarskiVersion.new(CONFIG).publish_feed("public_html/version.atom")
   end
   
-  desc "Has the changelog been updated?"
-  # Just a reminder about something I tend to forget.
+  desc "Generate a new changelog HTML file."
   task :changelog do
-    howto = "Say \033[1myes\033[0m when you have."
-    puts "Have you updated the changelog yet? #{howto}"
-    until gets =~ /^[Yy](|es)\s*$/
-      puts "Go and update it, then run rake again. #{howto}"
+    require 'bluecloth'
+    
+    %x{svn export http://tarski.googlecode.com/svn/releases/#{version} tarski}
+    
+    File.open("tarski/CHANGELOG", "r") do |f|
+      bc = BlueCloth::new(f.read)
+      changelog = File.open("public_html/changelog.html", "w+")
+      changelog.puts(bc.to_html)
     end
+    
+    %x{rm -rf tarski}
   end
   
   desc "Create a zip file of the lastest release in the downloads directory."
