@@ -1,3 +1,4 @@
-version: x.x.x
-link: http://yoursite.com/path/to/release/post/
-summary: A brief description of the changes in the latest release.
+version: 2.0.5
+branch: 2.0
+link: http://tarskitheme.com/2007/12/09/205-release/
+summary: Tarski 2 provides a raft of new features and a vastly improved codebase. 2.0.5 is a bugfix release.
