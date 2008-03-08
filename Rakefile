@@ -66,4 +66,9 @@ namespace :tarski do
   task :tag_release do
     %x{svn copy https://tarski.googlecode.com/svn/trunk https://tarski.googlecode.com/svn/releases/#{TVERSION} tarski}
   end
+  
+  desc "Create a new branch in the Subversion repository."
+  task :branch do
+    %x{svn copy https://tarski.googlecode.com/svn/trunk https://tarski.googlecode.com/svn/branches/#{TVERSION} tarski}
+  end
 end
