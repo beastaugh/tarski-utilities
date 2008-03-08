@@ -6,7 +6,7 @@ Some Rake tasks to tag and branch releases, create zip archives, generate an HTM
 # lib/tarski_version.rb
 Generates a version feed. Plugins mostly live in the WP plugin repository now, and get update notification for free, but since 1) themes don't get this and 2) update notification wasn't in WP core when I did it, I rolled my own.
 
-# conf/version_data.yml
+# conf/version.yml
 Dummy configuration for the version feed generator.
 
 # Required Gems
