@@ -5,7 +5,7 @@ require 'rake/rdoctask'
 require 'yaml'
 
 CONFIG = YAML::load(File.open("conf/version_data.yml"))
-version = CONFIG["version"]
+VERSION = CONFIG["version"]
 
 task :default do
   Rake::Task["tarski:update"].invoke
@@ -29,7 +29,7 @@ namespace :tarski do
     require 'hpricot'
     
     puts "Downloading Tarski files..."
-    %x{svn export http://tarski.googlecode.com/svn/releases/#{version} tarski}
+    %x{svn export http://tarski.googlecode.com/svn/releases/#{VERSION} tarski}
     
     puts "Building changelog file..."
     File.open("tarski/CHANGELOG", "r") do |file|
@@ -56,14 +56,14 @@ namespace :tarski do
   
   desc "Create a zip file of the lastest release in the downloads directory."
   task :zip_release do
-    file = "tarski_#{version}.zip"
-    %x{svn export http://tarski.googlecode.com/svn/releases/#{version} tarski}
+    file = "tarski_#{VERSION}.zip"
+    %x{svn export http://tarski.googlecode.com/svn/releases/#{VERSION} tarski}
     %x{zip -rm #{file} tarski}
     %x{mv #{file} public_html/downloads/#{file}}
   end
   
   desc "Tag a new release in the Subversion repository."
   task :tag_release do
-    %x{svn copy https://tarski.googlecode.com/svn/trunk https://tarski.googlecode.com/svn/releases/#{version} tarski}
+    %x{svn copy https://tarski.googlecode.com/svn/trunk https://tarski.googlecode.com/svn/releases/#{VERSION} tarski}
   end
 end
