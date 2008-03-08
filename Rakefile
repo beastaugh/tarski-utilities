@@ -27,26 +27,30 @@ namespace :tarski do
     require 'bluecloth'
     require 'hpricot'
     
-    # %x{svn export http://tarski.googlecode.com/svn/trunk tarski}
+    puts "Downloading Tarski files..."
+    %x{svn export http://tarski.googlecode.com/svn/releases/#{version} tarski}
     
-    File.open("tarski/CHANGELOG", "r") do |f|
-      doc = Hpricot(BlueCloth::new(f.read).to_html)
-      versions = Array.new
-      
+    puts "Building changelog file..."
+    File.open("tarski/CHANGELOG", "r") do |file|
+      doc = Hpricot(BlueCloth::new(file.read).to_html)
+      vlinks = Array.new
+    
       (doc/"h3").each do |header|
         version = header.inner_html.scan(/^Version (\d\.\d\.\d|\d\.\d)/).first
-        header.set_attribute('id', version)
-        versions << version
+        header.set_attribute('id', "v#{version}")
+        vlinks << "<li><a href=\"#v#{version}\">Version #{version}</a></li>"
       end
-      
-      puts doc.class
-      versions.each {|v| puts v }
-      
+    
+      vlinks = "<ul id=\"version-links\"></ul>\n" + vlinks.join("\n") + "\n</ul>\n\n"
+      html = vlinks + doc.to_html
+    
       changelog = File.open("public_html/changelog.html", "w+")
-      changelog.puts(doc.to_html)
+      changelog.puts(html)
     end
     
-    # %x{rm -rf tarski}
+    print "Removing Tarski files..."
+    %x{rm -rf tarski}
+    puts " Done!"
   end
   
   desc "Create a zip file of the lastest release in the downloads directory."
