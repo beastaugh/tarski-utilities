@@ -25,6 +25,7 @@ namespace :tarski do
   desc "Generate a new changelog HTML file."
   task :changelog do
     require 'bluecloth'
+    require 'rubypants'
     require 'hpricot'
     
     puts "Downloading Tarski files..."
@@ -45,7 +46,7 @@ namespace :tarski do
       html = vlinks + doc.to_html
     
       changelog = File.open("public_html/changelog.html", "w+")
-      changelog.puts(html)
+      changelog.puts(RubyPants.new(html).to_html)
     end
     
     print "Removing Tarski files..."
