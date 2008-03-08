@@ -4,7 +4,7 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'yaml'
 
-CONFIG = YAML::load(File.open("conf/version_data.yml"))
+CONFIG = YAML::load(File.open("conf/version.yml"))
 TVERSION = CONFIG["version"]
 
 task :default do
