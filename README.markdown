@@ -5,7 +5,7 @@ The files included in this repository constitute a toolset for working with [Tar
 ## Files
 
   * __Rakefile__: some Rake tasks to tag and branch releases, create zip archives, generate an HTML version of the changelog file and update a version feed.
-  * __lib/tarski_version.rb__: generates a version feed. Plugins mostly live in the WP plugin repository now, and get update notification for free, but since 1) themes don't get this and 2) update notification wasn't in WP core when I did it, I rolled my own.
+  * __lib/tarski_version.rb__: generates a version feed. Plugins mostly live in the WP plugin repository now, and get update notification for free, but since themes don't get this and update notification wasn't in WP core when I did it, I rolled my own.
   * __conf/version.yml__: a configuration file for the version feed generator.
 
 ## Required Gems
