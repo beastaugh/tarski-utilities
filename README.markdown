@@ -4,16 +4,16 @@ The files included in this repository constitute a toolset for working with Tars
 
 ## Files
 
-  * Rakefile - some Rake tasks to tag and branch releases, create zip archives, generate an HTML version of the changelog file and update a version feed.
-  * lib/tarski_version.rb - generates a version feed. Plugins mostly live in the WP plugin repository now, and get update notification for free, but since 1) themes don't get this and 2) update notification wasn't in WP core when I did it, I rolled my own.
-  * conf/version.yml - dummy configuration for the version feed generator.
+  * __Rakefile__ - some Rake tasks to tag and branch releases, create zip archives, generate an HTML version of the changelog file and update a version feed.
+  * __lib/tarski_version.rb__ - generates a version feed. Plugins mostly live in the WP plugin repository now, and get update notification for free, but since 1) themes don't get this and 2) update notification wasn't in WP core when I did it, I rolled my own.
+  * __conf/version.yml__ - dummy configuration for the version feed generator.
 
 ## Required Gems
 
 These tools are written in Ruby, so they require the RubyGems packaging system and the following gems:
 
-  * Rake: to run the tasks.
+  * __Rake__: to run the tasks.
   * YAML (comes with the Ruby standard library): reader and writer for the YAML file format, needed to read the config file.
-  * Builder: programmatic XML generation, required to create the Tarski version feed.
-  * BlueCloth: Markdown format reader and writer, used to read Tarski's changelog file.
-  * Hpricot: DOM scripting in Ruby for HTML and XML, used to parse the Tarski changelog and generate a list of links to each version's entry in the changelog.
+  * __Builder__: programmatic XML generation, required to create the Tarski version feed.
+  * __BlueCloth__: Markdown format reader and writer, used to read Tarski's changelog file.
+  * __Hpricot__: DOM scripting in Ruby for HTML and XML, used to parse the Tarski changelog and generate a list of links to each version's entry in the changelog.
