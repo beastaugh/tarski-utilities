@@ -1,12 +1,12 @@
 # Tarski Utilities
 
-The files included in this repository constitute a toolset for working with Tarski, a WordPress theme (http://tarskitheme.com). Hopefully they will prove useful to someone. List of files and required Ruby gems follows.
+The files included in this repository constitute a toolset for working with Tarski, a WordPress theme (http://tarskitheme.com). Hopefully they will prove useful to someone.
 
 ## Files
 
   * __Rakefile__: some Rake tasks to tag and branch releases, create zip archives, generate an HTML version of the changelog file and update a version feed.
   * __lib/tarski_version.rb__: generates a version feed. Plugins mostly live in the WP plugin repository now, and get update notification for free, but since 1) themes don't get this and 2) update notification wasn't in WP core when I did it, I rolled my own.
-  * __conf/version.yml__: dummy configuration for the version feed generator.
+  * __conf/version.yml__: a configuration file for the version feed generator.
 
 ## Required Gems
 
