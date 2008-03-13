@@ -28,11 +28,11 @@ namespace :tarski do
     require 'rubypants'
     require 'hpricot'
     
-    puts "Downloading Tarski files..."
-    %x{svn export http://tarski.googlecode.com/svn/releases/#{TVERSION} tarski}
+    puts "Downloading changelog..."
+    %x{svn export http://tarski.googlecode.com/svn/trunk/CHANGELOG}
     
-    puts "Building changelog file..."
-    File.open("tarski/CHANGELOG", "r") do |file|
+    puts "Building HTML..."
+    File.open("CHANGELOG", "r") do |file|
       doc = Hpricot(BlueCloth::new(file.read).to_html)
       vlinks = Array.new
     
@@ -41,16 +41,24 @@ namespace :tarski do
         header.set_attribute('id', "v#{version}")
         vlinks << "<li><a href=\"#v#{version}\">Version #{version}</a></li>"
       end
-    
-      vlinks = "<ul id=\"version-links\"></ul>\n" + vlinks.join("\n") + "\n</ul>\n\n"
-      html = vlinks + doc.to_html
+      
+      updated_at = "\n\n<p class=\"metadata\">Last updated #{Time.now.strftime("%B %d %Y")}</p>"
+      vlinks = "\n\n<h3>Contents</h3>
+      
+      <ul id=\"version-links\">
+          #{vlinks.join("\n")}
+      </ul>\n\n"
+      
+      (doc/"h1").set('class', 'title').wrap(%{<div id="changelog-header" class="meta"></div>})
+      doc.at("h1").after(updated_at)
+      doc.at("#changelog-header").after(vlinks)
     
       changelog = File.open("public_html/changelog.html", "w+")
-      changelog.puts(RubyPants.new(html).to_html)
+      changelog.puts(RubyPants.new(doc.to_html).to_html)
     end
     
-    print "Removing Tarski files..."
-    %x{rm -rf tarski}
+    print "Removing changelog..."
+    %x{rm CHANGELOG}
     puts " Done!"
   end
   
