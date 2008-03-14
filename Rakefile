@@ -6,6 +6,8 @@ require 'yaml'
 
 CONFIG = YAML::load(File.open("conf/version.yml"))
 TVERSION = CONFIG["version"]
+SVN_URL = "http://tarski.googlecode.com/svn"
+SSL_SVN_URL = "https://tarski.googlecode.com/svn"
 
 task :default do
   Rake::Task["tarski:update"].invoke
@@ -28,8 +30,10 @@ namespace :tarski do
     require 'rubypants'
     require 'hpricot'
     
+    cfile = "CHANGELOG"
+    
     puts "Downloading changelog..."
-    %x{svn export http://tarski.googlecode.com/svn/trunk/CHANGELOG}
+    %x{svn export #{SVN_URL}/branches/#{TVERSION}/#{cfile}}
     
     puts "Reading files..."
     
@@ -37,7 +41,9 @@ namespace :tarski do
     struct = Hpricot(sf.read)
     sf.close
     
-    df = File.open("CHANGELOG", "r")
+    df = File.open(cfile, "r")
+    # Changelog is provided in Markdown format, so it needs to be passed
+    # through BlueCloth before being read into Hpricot.
     doc = Hpricot(BlueCloth::new(df.read).to_html)
     df.close
     
@@ -57,30 +63,35 @@ namespace :tarski do
     struct.at("#version-links").inner_html = vlinks.join("\n")
     struct.search("#version-links").after(doc.to_html)
     
-    changelog = File.open("public_html/changelog.html", "w+")
-    changelog.puts(RubyPants.new(struct.to_html).to_html)
-    changelog.close
+    File.open("public_html/changelog.html", "w+") do |changelog|
+      changelog.puts(RubyPants.new(struct.to_html).to_html)
+    end
     
-    print "Removing changelog..."
-    %x{rm CHANGELOG}
-    puts " Done!"
+    print "Removing changelog... "
+    File.delete(cfile)
+    puts "Done."
   end
   
   desc "Create a zip file of the lastest release in the downloads directory."
-  task :zip_release do
-    file = "tarski_#{TVERSION}.zip"
-    %x{svn export http://tarski.googlecode.com/svn/releases/#{TVERSION} tarski}
-    %x{zip -rm #{file} tarski}
-    %x{mv #{file} public_html/downloads/#{file}}
+  task :zip do
+    puts "Downloading Tarski files..."
+    %x{svn export #{SVN_URL}/releases/#{TVERSION} tarski}
+    print "Creating zip file... "
+    %x{zip -rm public_html/downloads/tarski_#{TVERSION}.zip tarski}
+    puts "Done."
   end
   
   desc "Tag a new release in the Subversion repository."
-  task :tag_release do
-    %x{svn copy https://tarski.googlecode.com/svn/trunk https://tarski.googlecode.com/svn/releases/#{TVERSION} tarski}
+  task :tag do
+    print "Tagging version #{TVERSION}... "
+    %x{svn copy #{SSL_SVN_URL}/trunk #{SSL_SVN_URL}/releases/#{TVERSION} tarski}
+    puts "Done."
   end
   
   desc "Create a new branch in the Subversion repository."
   task :branch do
-    %x{svn copy https://tarski.googlecode.com/svn/trunk https://tarski.googlecode.com/svn/branches/#{TVERSION} tarski}
+    print "Creating branch #{TVERSION}... "
+    %x{svn copy #{SSL_SVN_URL}/trunk #{SSL_SVN_URL}/branches/#{TVERSION} tarski}
+    puts "Done."
   end
 end
