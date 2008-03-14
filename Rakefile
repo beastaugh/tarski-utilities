@@ -16,7 +16,7 @@ end
 namespace :tarski do
   
   desc "Runs a full version update. By default a new release is not tagged in the Subversion repository."
-  task :update => [:zip_release, :feed]
+  task :update => [:zip, :feed, :changelog]
   
   desc "Update the version feed to notify Tarski users of the new release."
   task :feed => [:changelog] do
@@ -37,15 +37,15 @@ namespace :tarski do
     
     puts "Reading files..."
     
-    sf = File.open("conf/changelog-structure.html", "r")
-    struct = Hpricot(sf.read)
-    sf.close
+    struct = File.open("conf/changelog-structure.html", "r") do |file|
+      struct = Hpricot(file.read)
+    end
     
-    df = File.open(cfile, "r")
-    # Changelog is provided in Markdown format, so it needs to be passed
-    # through BlueCloth before being read into Hpricot.
-    doc = Hpricot(BlueCloth::new(df.read).to_html)
-    df.close
+    doc = File.open(cfile, "r") do |file|
+      # Changelog is provided in Markdown format, so it needs to be passed
+      # through BlueCloth before being read into Hpricot.
+      Hpricot(BlueCloth::new(file.read).to_html)
+    end
     
     vlinks = Array.new
     
