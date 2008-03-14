@@ -33,7 +33,7 @@ namespace :tarski do
     cfile = "CHANGELOG"
     
     puts "Downloading changelog..."
-    %x{svn export #{SVN_URL}/branches/#{TVERSION}/#{cfile}}
+    %x{svn export #{SVN_URL}/trunk/#{cfile}}
     
     puts "Reading files..."
     

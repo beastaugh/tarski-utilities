@@ -1,4 +1,5 @@
 # Ignore public_html/ directory and contents
-public_html/
+public_html/*.*
+public_html/*/*.*
 # Ignore tarski/ directory and contents
 tarski/
