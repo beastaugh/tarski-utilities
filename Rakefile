@@ -31,31 +31,35 @@ namespace :tarski do
     puts "Downloading changelog..."
     %x{svn export http://tarski.googlecode.com/svn/trunk/CHANGELOG}
     
-    puts "Building HTML..."
-    File.open("CHANGELOG", "r") do |file|
-      doc = Hpricot(BlueCloth::new(file.read).to_html)
-      vlinks = Array.new
+    puts "Reading files..."
     
-      (doc/"h3").each do |header|
-        version = header.inner_html.scan(/^Version (\d\.\d\.\d|\d\.\d)/).first
-        header.set_attribute('id', "v#{version}")
-        vlinks << "<li><a href=\"#v#{version}\">Version #{version}</a></li>"
-      end
-      
-      updated_at = "\n\n<p class=\"metadata\">Last updated #{Time.now.strftime("%B %d %Y")}</p>"
-      vlinks = "\n\n<h3>Contents</h3>
-      
-      <ul id=\"version-links\">
-          #{vlinks.join("\n")}
-      </ul>\n\n"
-      
-      (doc/"h1").set('class', 'title').wrap(%{<div id="changelog-header" class="meta"></div>})
-      doc.at("h1").after(updated_at)
-      doc.at("#changelog-header").after(vlinks)
+    sf = File.open("conf/changelog-structure.html", "r")
+    struct = Hpricot(sf.read)
+    sf.close
     
-      changelog = File.open("public_html/changelog.html", "w+")
-      changelog.puts(RubyPants.new(doc.to_html).to_html)
+    df = File.open("CHANGELOG", "r")
+    doc = Hpricot(BlueCloth::new(df.read).to_html)
+    df.close
+    
+    vlinks = Array.new
+    
+    puts "Generating HTML..."
+    
+    (doc/"h1").remove
+    
+    (doc/"h3").each do |header|
+      version = header.inner_html.scan(/^Version (\d\.\d\.\d|\d\.\d)/).first
+      header.set_attribute('id', "v#{version}")
+      vlinks << "<li><a href=\"#v#{version}\">Version #{version}</a></li>"
     end
+    
+    struct.at("#changelog-updated").inner_html = "Last updated #{Time.now.strftime("%B %d %Y")}"
+    struct.at("#version-links").inner_html = vlinks.join("\n")
+    struct.search("#version-links").after(doc.to_html)
+    
+    changelog = File.open("public_html/changelog.html", "w+")
+    changelog.puts(RubyPants.new(struct.to_html).to_html)
+    changelog.close
     
     print "Removing changelog..."
     %x{rm CHANGELOG}
