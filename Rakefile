@@ -67,7 +67,7 @@ namespace :tarski do
       changelog.puts(RubyPants.new(struct.to_html).to_html)
     end
     
-    print "Removing changelog... "
+    puts "Removing changelog..."
     File.delete(cfile)
     puts "Done."
   end
