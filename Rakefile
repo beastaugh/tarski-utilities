@@ -6,6 +6,7 @@ require 'yaml'
 
 CONFIG = YAML::load(File.open("conf/version.yml"))
 TVERSION = CONFIG["version"]
+PUBPATH = '../public_html'
 SVN_URL = "http://tarski.googlecode.com/svn"
 SSL_SVN_URL = "https://tarski.googlecode.com/svn"
 
@@ -21,7 +22,7 @@ namespace :tarski do
   desc "Update the version feed to notify Tarski users of the new release."
   task :feed => [:changelog] do
     require 'lib/tarski_version'
-    TarskiVersion.new(CONFIG).publish_feed("public_html/version.atom")
+    TarskiVersion.new(CONFIG).publish_feed("#{PUBPATH}/version.atom")
   end
   
   desc "Generate a new changelog HTML file."
@@ -63,7 +64,7 @@ namespace :tarski do
     struct.at("#version-links").inner_html = vlinks.join("\n")
     struct.search("#version-links").after(doc.to_html)
     
-    File.open("public_html/changelog.html", "w+") do |changelog|
+    File.open("#{PUBPATH}/changelog.html", "w+") do |changelog|
       changelog.puts(RubyPants.new(struct.to_html).to_html)
     end
     
@@ -77,7 +78,7 @@ namespace :tarski do
     puts "Downloading Tarski files..."
     %x{svn export #{SVN_URL}/releases/#{TVERSION} tarski}
     print "Creating zip file... "
-    %x{zip -rm public_html/downloads/tarski_#{TVERSION}.zip tarski}
+    %x{zip -rm #{PUBPATH}/downloads/tarski_#{TVERSION}.zip tarski}
     puts "Done."
   end
   
