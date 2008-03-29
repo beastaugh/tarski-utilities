@@ -14,7 +14,8 @@ The files included in this repository constitute a toolset for working with [Tar
 These tools are written in Ruby, so they require the RubyGems packaging system and the following gems:
 
   * [__Rake__](http://http://rake.rubyforge.org/ "Rake: Ruby Make"): to run the tasks.
-  * [__YAML__](http://www.yaml.org/ "YAML: YAML Ain't Markup Language") (comes with the Ruby standard library): reader and writer for the YAML file format, needed to read the config file.
+  * [__YAML__](http://www.yaml.org/ "YAML: YAML Ain't Markup Language"): reader and writer for the YAML file format, needed to read the config file.
   * [__Builder__](http://builder.rubyforge.org/): programmatic XML generation, required to create the Tarski version feed.
   * [__BlueCloth__](http://www.devEiate.org/projects/BlueCloth "A Ruby impelementation of Markdown"): Markdown format reader and writer, used to read Tarski's changelog file.
   * [__Hpricot__](http://code.whytheluckystiff.net/hpricot/ "A fast and delightful HTML parser"): DOM scripting in Ruby for HTML and XML, used to parse the Tarski changelog and generate a list of links to each version's entry in the changelog.
+  * [__open-uri__](http://www.ruby-doc.org/stdlib/libdoc/open-uri/rdoc/): A wrapper for some other libraries which provide network protocol access, used to read remote files where necessary. _Part of the Ruby standard library_.

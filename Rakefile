@@ -30,11 +30,7 @@ namespace :tarski do
     require 'bluecloth'
     require 'rubypants'
     require 'hpricot'
-    
-    cfile = "CHANGELOG"
-    
-    puts "Downloading changelog..."
-    %x{svn export #{SVN_URL}/trunk/#{cfile}}
+    require 'open-uri'
     
     puts "Reading files..."
     
@@ -42,7 +38,7 @@ namespace :tarski do
       struct = Hpricot(file.read)
     end
     
-    doc = File.open(cfile, "r") do |file|
+    doc = open("#{SVN_URL}/trunk/CHANGELOG") do |file|
       # Changelog is provided in Markdown format, so it needs to be passed
       # through BlueCloth before being read into Hpricot.
       Hpricot(BlueCloth::new(file.read).to_html)
@@ -50,7 +46,7 @@ namespace :tarski do
     
     vlinks = Array.new
     
-    puts "Generating HTML..."
+    puts "Generating changelog HTML file..."
     
     (doc/"h1").remove
     
@@ -68,8 +64,6 @@ namespace :tarski do
       changelog.puts(RubyPants.new(struct.to_html).to_html)
     end
     
-    puts "Removing changelog..."
-    File.delete(cfile)
     puts "Done."
   end
   
@@ -77,21 +71,21 @@ namespace :tarski do
   task :zip do
     puts "Downloading Tarski files..."
     %x{svn export #{SVN_URL}/releases/#{TVERSION} tarski}
-    print "Creating zip file... "
+    puts "Creating zip file..."
     %x{zip -rm #{PUBPATH}/downloads/tarski_#{TVERSION}.zip tarski}
-    puts "Done."
+    puts "done."
   end
   
   desc "Tag a new release in the Subversion repository."
   task :tag do
-    print "Tagging version #{TVERSION}... "
+    puts "Tagging version #{TVERSION}..."
     %x{svn copy #{SSL_SVN_URL}/trunk #{SSL_SVN_URL}/releases/#{TVERSION} tarski}
     puts "Done."
   end
   
   desc "Create a new branch in the Subversion repository."
   task :branch do
-    print "Creating branch #{TVERSION}... "
+    puts "Creating branch #{TVERSION}..."
     %x{svn copy #{SSL_SVN_URL}/trunk #{SSL_SVN_URL}/branches/#{TVERSION} tarski}
     puts "Done."
   end
