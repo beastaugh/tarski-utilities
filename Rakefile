@@ -7,7 +7,7 @@ require 'yaml'
 CONFIG = YAML::load(File.open("conf/config.yml"))
 PUBPATH = CONFIG["pubpath"]
 VDATA = YAML::load(File.open("conf/version.yml"))
-VERSION = VDATA["version"]
+TVERSION = VDATA["version"]
 SVN_URL = "http://tarski.googlecode.com/svn"
 SSL_SVN_URL = "https://tarski.googlecode.com/svn"
 
@@ -71,23 +71,23 @@ namespace :tarski do
   desc "Create a zip file of the lastest release in the downloads directory."
   task :zip do
     puts "Downloading Tarski files..."
-    %x{svn export #{SVN_URL}/releases/#{VERSION} tarski}
+    %x{svn export #{SVN_URL}/releases/#{TVERSION} tarski}
     puts "Creating zip file..."
-    %x{zip -rm #{PUBPATH}/downloads/tarski_#{VERSION}.zip tarski}
+    %x{zip -rm #{PUBPATH}/downloads/tarski_#{TVERSION}.zip tarski}
     puts "done."
   end
   
   desc "Tag a new release in the Subversion repository."
   task :tag do
-    puts "Tagging version #{VERSION}..."
-    %x{svn copy #{SSL_SVN_URL}/trunk #{SSL_SVN_URL}/releases/#{VERSION} tarski}
+    puts "Tagging version #{TVERSION}..."
+    %x{svn copy #{SSL_SVN_URL}/trunk #{SSL_SVN_URL}/releases/#{TVERSION} tarski}
     puts "Done."
   end
   
   desc "Create a new branch in the Subversion repository."
   task :branch do
-    puts "Creating branch #{VERSION}..."
-    %x{svn copy #{SSL_SVN_URL}/trunk #{SSL_SVN_URL}/branches/#{VERSION} tarski}
+    puts "Creating branch #{TVERSION}..."
+    %x{svn copy #{SSL_SVN_URL}/trunk #{SSL_SVN_URL}/branches/#{TVERSION} tarski}
     puts "Done."
   end
 end
