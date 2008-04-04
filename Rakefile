@@ -23,7 +23,9 @@ namespace :tarski do
   desc "Update the version feed to notify Tarski users of the new release."
   task :feed => [:changelog] do
     require 'lib/tarski_version'
+    puts "Generating version feed..."
     TarskiVersion.new(VDATA).publish_feed("#{PUBPATH}/version.atom")
+    puts "Done."
   end
   
   desc "Generate a new changelog HTML file."
