@@ -70,7 +70,7 @@ task :zip do
   %x{svn export #{SVN_URL}/releases/#{TVERSION} tarski}
   puts "Creating zip file..."
   %x{zip -rm #{PUBPATH}/downloads/tarski_#{TVERSION}.zip tarski}
-  puts "done."
+  puts "Done."
 end
 
 desc "Tag a new release in the Subversion repository."
