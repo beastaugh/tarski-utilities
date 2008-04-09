@@ -32,7 +32,7 @@ task :changelog do
   puts "Reading files..."
   
   struct = File.open("conf/changelog-structure.html", "r") do |file|
-    struct = Hpricot(file.read)
+    Hpricot(file.read)
   end
   
   doc = open("#{SVN_URL}/trunk/CHANGELOG") do |file|
