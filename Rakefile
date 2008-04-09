@@ -7,7 +7,7 @@ require 'yaml'
 CONFIG = YAML::load(File.open("conf/config.yml"))
 PUBPATH = CONFIG["pubpath"]
 VDATA = YAML::load(File.open("conf/version.yml"))
-TVERSION = VDATA["version"]
+TVERSION = ENV['v'] || VDATA["version"]
 SVN_URL = "http://tarski.googlecode.com/svn"
 SSL_SVN_URL = "https://tarski.googlecode.com/svn"
 
