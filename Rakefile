@@ -11,10 +11,6 @@ TVERSION = ENV['v'] || VDATA["version"]
 SVN_URL = "http://tarski.googlecode.com/svn"
 SSL_SVN_URL = "https://tarski.googlecode.com/svn"
 
-task :default do
-  Rake::Task["tarski:update"].invoke
-end
-
 namespace :tarski do
   
   desc "Runs a full version update. By default a new release is not tagged in the Subversion repository."
