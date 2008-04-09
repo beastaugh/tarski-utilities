@@ -48,7 +48,7 @@ task :changelog do
   (doc/"h1").remove
   
   (doc/"h3").each do |header|
-    version = header.inner_html.scan(/^Version (\d\.\d\.\d|\d\.\d)/).first
+    version = header.inner_html.scan(/^Version (\d(?:\.\d)+)/)[0][0]
     header.set_attribute('id', "v#{version}")
     vlinks << "<li><a href=\"#v#{version}\">Version #{version}</a></li>"
   end
