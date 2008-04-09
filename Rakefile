@@ -11,7 +11,7 @@ TVERSION = ENV['v'] || VDATA["version"]
 SVN_URL = "http://tarski.googlecode.com/svn"
 SSL_SVN_URL = "https://tarski.googlecode.com/svn"
 
-desc "Runs a full version update. By default a new release is not tagged in the Subversion repository."
+desc "Creates a zip archive, and updates the version feed and changelog."
 task :update => [:zip, :feed, :changelog]
 
 desc "Update the version feed to notify Tarski users of the new release."
