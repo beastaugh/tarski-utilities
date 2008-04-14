@@ -72,17 +72,3 @@ task :zip do
   %x{zip -rm #{PUBPATH}/downloads/tarski_#{TVERSION}.zip tarski}
   puts "Done."
 end
-
-desc "Tag a new release in the Subversion repository."
-task :tag do
-  puts "Tagging version #{TVERSION}..."
-  %x{svn copy #{SSL_SVN_URL}/trunk #{SSL_SVN_URL}/releases/#{TVERSION} tarski}
-  puts "Done."
-end
-
-desc "Create a new branch in the Subversion repository."
-task :branch do
-  puts "Creating branch #{TVERSION}..."
-  %x{svn copy #{SSL_SVN_URL}/trunk #{SSL_SVN_URL}/branches/#{TVERSION} tarski}
-  puts "Done."
-end
