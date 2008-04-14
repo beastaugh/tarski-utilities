@@ -29,7 +29,7 @@ task :changelog do
   require 'hpricot'
   require 'open-uri'
   
-  puts "Reading files..."
+  puts "Reading changelog..."
   
   struct = File.open("conf/changelog-structure.html", "r") do |file|
     Hpricot(file.read)
@@ -43,7 +43,7 @@ task :changelog do
   
   vlinks = Array.new
   
-  puts "Generating changelog HTML file..."
+  puts "Generating HTML..."
   
   (doc/"h1").remove
   
