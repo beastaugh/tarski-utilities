@@ -6,24 +6,14 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
-def version_setup(vfile)
-  vdata = YAML::load(File.open(vfile))
-  nvdata = {}
-  
-  vdata.each do |key, value|
-    nvdata[key.to_s] = value
-    value["datetime"] = value["datetime"].xmlschema unless value["datetime"].nil?
-  end
-  
-  nvdata.to_a.reverse
-end
+require 'lib/setup'
 
 CONFIG = YAML::load(File.open("conf/config.yml"))
+VDATA = TarskiUtils::version_info("conf/version.yml")
+
 PUBPATH = CONFIG["pubpath"]
-version_data = version_setup("conf/version.yml")
-TVERSION = ENV['v'] || version_data.first.first
-SVN_URL = "http://tarski.googlecode.com/svn"
-SSL_SVN_URL = "https://tarski.googlecode.com/svn"
+TVERSION = ENV['v'] || VDATA.first.first
+SVN_URL = CONFIG["svn_url"]
 
 desc "Creates a zip archive, and updates the version feed and changelog."
 task :update => [:zip, :feed, :changelog]
@@ -32,7 +22,7 @@ desc "Update the version feed to notify Tarski users of the new release."
 task :feed do
   require 'lib/tarski_version'
   puts "Generating version feed..."  
-  TarskiVersion.new(version_data, CONFIG["feed"]).publish_feed("#{PUBPATH}/version.atom")
+  TarskiVersion.new(VDATA, CONFIG["feed"]).publish_feed("#{PUBPATH}/version.atom")
   puts "Done."
 end
 

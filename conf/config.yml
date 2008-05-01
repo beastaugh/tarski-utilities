@@ -1,4 +1,5 @@
 pubpath: ../public
+svn_url: http://tarski.googlecode.com/svn
 
 feed:
   url: http://tarskitheme.com/

@@ -11,9 +11,6 @@ class TarskiVersion
   
   # Version data is passed to the constructor so it's not too tightly coupled
   # with the data collection method.
-  # 
-  # It just uses the current time so if your client cares about that, you might
-  # want to change it so the date and time are specified in the version data.
   def initialize(version_data, config)
     @versions = version_data
     @config = config
@@ -21,8 +18,6 @@ class TarskiVersion
   end
   
   # Writes an Atom feed encapsulating the version data to the target location.
-  #  
-  # TODO: Move some of the configuration details out of the class.
   def publish_feed(target)
     @file = File.new(target, "w+")
     xml = Builder::XmlMarkup.new(:target => @file, :indent => 2)
