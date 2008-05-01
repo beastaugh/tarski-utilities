@@ -15,7 +15,7 @@ desc "Creates a zip archive, and updates the version feed and changelog."
 task :update => [:zip, :feed, :changelog]
 
 desc "Update the version feed to notify Tarski users of the new release."
-task :feed => [:changelog] do
+task :feed do
   require 'lib/tarski_version'
   puts "Generating version feed..."
   TarskiVersion.new(VDATA).publish_feed("#{PUBPATH}/version.atom")
