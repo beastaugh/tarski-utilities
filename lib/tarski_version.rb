@@ -22,6 +22,7 @@ class TarskiVersion
   # Writes an Atom feed encapsulating the version data to the target location.
   #  
   # TODO: Move some of the configuration details out of the class.
+  # TODO: Make the create and update times of the entries correct.
   def publish_feed(target)
     @file = File.new(target, "w+")
     xml = Builder::XmlMarkup.new(:target => @file, :indent => 2)
