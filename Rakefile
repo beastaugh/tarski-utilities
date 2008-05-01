@@ -32,7 +32,7 @@ desc "Update the version feed to notify Tarski users of the new release."
 task :feed do
   require 'lib/tarski_version'
   puts "Generating version feed..."  
-  TarskiVersion.new(version_data).publish_feed("#{PUBPATH}/version.atom")
+  TarskiVersion.new(version_data, CONFIG["feed"]).publish_feed("#{PUBPATH}/version.atom")
   puts "Done."
 end
 

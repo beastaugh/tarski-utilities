@@ -14,8 +14,9 @@ class TarskiVersion
   # 
   # It just uses the current time so if your client cares about that, you might
   # want to change it so the date and time are specified in the version data.
-  def initialize(version_data)
+  def initialize(version_data, config)
     @versions = version_data
+    @config = config
     @datetime = version_data.first.first["datetime"] || DateTime.now.to_s
   end
   
@@ -27,13 +28,15 @@ class TarskiVersion
     xml = Builder::XmlMarkup.new(:target => @file, :indent => 2)
     xml.instruct!
     xml.feed :xmlns => "http://www.w3.org/2005/Atom", "xml:lang" => "en-GB" do
-      xml.title     "Tarski update notification"
-      xml.link      :rel => "alternate", :href => "http://tarskitheme.com/"
-      xml.link      :rel => "self", :href => "http://tarskitheme.com/version.atom"
-      xml.id        "http://tarskitheme.com/"
+      xml.title     @config["title"]
+      xml.link      :rel => "alternate", :href => @config["url"]
+      xml.link      :rel => "self", :href => @config["url"] + File.basename(target)
+      xml.id        @config["url"]
       xml.updated   @datetime
-      xml.author    { xml.name "Benedict Eastaugh" }
-      xml.author    { xml.name "Chris Sternal-Johnson" }
+
+      @config["author"].each do |name|
+        xml.author  { xml.name name }
+      end
       
       @versions.each do |vnumber, vdata|
         xml.entry do
