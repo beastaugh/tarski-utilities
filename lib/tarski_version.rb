@@ -15,8 +15,8 @@ class TarskiVersion
   # It just uses the current time so if your client cares about that, you might
   # want to change it so the date and time are specified in the version data.
   def initialize(version_data)
-    @version_data = version_data
-    @time = DateTime.now.to_s
+    @versions = version_data
+    @datetime = version_data.first.first["datetime"] || DateTime.now.to_s
   end
   
   # Writes an Atom feed encapsulating the version data to the target location.
@@ -32,16 +32,16 @@ class TarskiVersion
       xml.link      :rel => "alternate", :href => "http://tarskitheme.com/"
       xml.link      :rel => "self", :href => "http://tarskitheme.com/version.atom"
       xml.id        "http://tarskitheme.com/"
-      xml.updated   @time
+      xml.updated   @datetime
       xml.author    { xml.name "Benedict Eastaugh" }
       xml.author    { xml.name "Chris Sternal-Johnson" }
       
-      @version_data.each do |vnumber, vdata|
+      @versions.each do |vnumber, vdata|
         xml.entry do
           xml.title   vnumber
           xml.link    :rel => "alternate", :href => vdata["link"]
           xml.id      vdata["link"]
-          xml.updated @time
+          xml.updated vdata["datetime"] || @datetime
           xml.summary { xml.text! vdata["summary"] }
         end
       end

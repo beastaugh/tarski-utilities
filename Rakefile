@@ -1,13 +1,27 @@
+require 'yaml'
+require 'time'
+
 require 'rubygems'
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
-require 'yaml'
+
+def version_setup(vfile)
+  vdata = YAML::load(File.open(vfile))
+  nvdata = {}
+  
+  vdata.each do |key, value|
+    nvdata[key.to_s] = value
+    value["datetime"] = value["datetime"].xmlschema unless value["datetime"].nil?
+  end
+  
+  nvdata.to_a.reverse
+end
 
 CONFIG = YAML::load(File.open("conf/config.yml"))
 PUBPATH = CONFIG["pubpath"]
-VDATA = YAML::load(File.open("conf/version.yml"))
-TVERSION = ENV['v'] || VDATA["version"]
+version_data = version_setup("conf/version.yml")
+TVERSION = ENV['v'] || version_data.first.first
 SVN_URL = "http://tarski.googlecode.com/svn"
 SSL_SVN_URL = "https://tarski.googlecode.com/svn"
 
@@ -17,8 +31,8 @@ task :update => [:zip, :feed, :changelog]
 desc "Update the version feed to notify Tarski users of the new release."
 task :feed do
   require 'lib/tarski_version'
-  puts "Generating version feed..."
-  TarskiVersion.new(VDATA).publish_feed("#{PUBPATH}/version.atom")
+  puts "Generating version feed..."  
+  TarskiVersion.new(version_data).publish_feed("#{PUBPATH}/version.atom")
   puts "Done."
 end
 
