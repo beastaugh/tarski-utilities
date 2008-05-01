@@ -20,11 +20,7 @@ class TarskiVersion
   end
   
   # Writes an Atom feed encapsulating the version data to the target location.
-  # 
-  # Currently it only does one--i.e. the latest--entry. This is just a
-  # limitation of my simplistic config file; adding support for multiple
-  # entries would be trivial.
-  # 
+  #  
   # TODO: Move some of the configuration details out of the class.
   def publish_feed(target)
     @file = File.new(target, "w+")
@@ -38,13 +34,15 @@ class TarskiVersion
       xml.updated   @time
       xml.author    { xml.name "Benedict Eastaugh" }
       xml.author    { xml.name "Chris Sternal-Johnson" }
-  
-      xml.entry do
-        xml.title   @version_data["version"]
-        xml.link    :rel => "alternate", :href => @version_data["link"]
-        xml.id      @version_data["link"]
-        xml.updated @time
-        xml.summary { xml.text! @version_data["summary"] }
+      
+      @version_data.each do |vnumber, vdata|
+        xml.entry do
+          xml.title   vnumber
+          xml.link    :rel => "alternate", :href => vdata["link"]
+          xml.id      vdata["link"]
+          xml.updated @time
+          xml.summary { xml.text! vdata["summary"] }
+        end
       end
     end
   end
