@@ -1,4 +1,8 @@
-version: 2.1
-branch: 2.1
-link: http://tarskitheme.com/
-summary: Tarski 2.1 includes a number of enhancements, including a fully widget-based footer area, avatar support, and a reworked options page in line with the new WordPress admin interface.
+2.1:
+  link: http://tarskitheme.com/
+  summary: Tarski 2.1 includes a number of enhancements, including a fully widget-based footer area, avatar support, and a reworked options page in line with the new WordPress admin interface.
+
+2.0.5:
+  link: http://tarskitheme.com/2007/12/09/205-release/
+  summary: Tarski 2 provides a raft of new features and a vastly improved codebase. 2.0.5 is a bugfix release.
+  datetime: 2007-12-13T09:41:32-07:00

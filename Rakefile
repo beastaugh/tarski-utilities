@@ -1,26 +1,28 @@
-# Adding a test comment
+require 'yaml'
+require 'time'
 
 require 'rubygems'
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
-require 'yaml'
+
+require 'lib/setup'
 
 CONFIG = YAML::load(File.open("conf/config.yml"))
+VDATA = TarskiUtils::version_info("conf/version.yml")
+
 PUBPATH = CONFIG["pubpath"]
-VDATA = YAML::load(File.open("conf/version.yml"))
-TVERSION = ENV['v'] || VDATA["version"]
-SVN_URL = "http://tarski.googlecode.com/svn"
-SSL_SVN_URL = "https://tarski.googlecode.com/svn"
+TVERSION = ENV['v'] || VDATA.first.first
+SVN_URL = CONFIG["svn_url"]
 
 desc "Creates a zip archive, and updates the version feed and changelog."
 task :update => [:zip, :feed, :changelog]
 
 desc "Update the version feed to notify Tarski users of the new release."
-task :feed => [:changelog] do
+task :feed do
   require 'lib/tarski_version'
-  puts "Generating version feed..."
-  TarskiVersion.new(VDATA).publish_feed("#{PUBPATH}/version.atom")
+  puts "Generating version feed..."  
+  TarskiVersion.new(VDATA, CONFIG["feed"]).publish_feed("#{PUBPATH}/version.atom")
   puts "Done."
 end
 
@@ -31,7 +33,7 @@ task :changelog do
   require 'hpricot'
   require 'open-uri'
   
-  puts "Reading files..."
+  puts "Reading changelog..."
   
   struct = File.open("conf/changelog-structure.html", "r") do |file|
     Hpricot(file.read)
@@ -45,7 +47,7 @@ task :changelog do
   
   vlinks = Array.new
   
-  puts "Generating changelog HTML file..."
+  puts "Generating HTML..."
   
   (doc/"h1").remove
   
@@ -72,19 +74,5 @@ task :zip do
   %x{svn export #{SVN_URL}/releases/#{TVERSION} tarski}
   puts "Creating zip file..."
   %x{zip -rm #{PUBPATH}/downloads/tarski_#{TVERSION}.zip tarski}
-  puts "Done."
-end
-
-desc "Tag a new release in the Subversion repository."
-task :tag do
-  puts "Tagging version #{TVERSION}..."
-  %x{svn copy #{SSL_SVN_URL}/trunk #{SSL_SVN_URL}/releases/#{TVERSION} tarski}
-  puts "Done."
-end
-
-desc "Create a new branch in the Subversion repository."
-task :branch do
-  puts "Creating branch #{TVERSION}..."
-  %x{svn copy #{SSL_SVN_URL}/trunk #{SSL_SVN_URL}/branches/#{TVERSION} tarski}
   puts "Done."
 end
