@@ -1,3 +1,8 @@
+2.1.2:
+  link: http://tarskitheme.com/2008/05/20/21-release/
+  summary: Fixes a nasty version check timeout bug.
+  datetime: 2008-06-07T14:08:05+01:00
+
 2.1.1:
   link: http://tarskitheme.com/2008/05/20/21-release/
   summary: A small bug-fix release for Tarski 2.1.
