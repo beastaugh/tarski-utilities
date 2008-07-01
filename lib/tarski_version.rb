@@ -14,7 +14,7 @@ class TarskiVersion
   def initialize(version_data, config)
     @versions = version_data
     @config = config
-    @datetime = version_data.first.first["datetime"] || DateTime.now.to_s
+    @datetime = version_data.first.first["datetime"] || Time.now.xmlschema
   end
   
   # Writes an Atom feed encapsulating the version data to the target location.

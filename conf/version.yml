@@ -1,6 +1,22 @@
+2.1.3:
+  link: http://tarskitheme.com/2008/05/20/21-release/
+  summary: Fixes a PHP 4 compatibility issue.
+  datetime: 2008-06-08T00:59:02+01:00
+  
+2.1.2:
+  link: http://tarskitheme.com/2008/05/20/21-release/
+  summary: Fixes a nasty version check timeout bug.
+  datetime: 2008-06-07T14:08:05+01:00
+
+2.1.1:
+  link: http://tarskitheme.com/2008/05/20/21-release/
+  summary: A small bug-fix release for Tarski 2.1.
+  datetime: 2008-05-26T20:32:13+01:00
+
 2.1:
-  link: http://tarskitheme.com/
+  link: http://tarskitheme.com/2008/05/20/21-release/
   summary: Tarski 2.1 includes a number of enhancements, including a fully widget-based footer area, avatar support, and a reworked options page in line with the new WordPress admin interface.
+  datetime: 2008-05-20T13:39:57+00:00
 
 2.0.5:
   link: http://tarskitheme.com/2007/12/09/205-release/
