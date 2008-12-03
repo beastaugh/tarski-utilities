@@ -1,5 +1,6 @@
 pubpath: ../public
 svn_url: http://tarski.googlecode.com/svn
+git_repo: git://github.com/ionfish/tarski.git
 
 feed:
   url: http://tarskitheme.com/

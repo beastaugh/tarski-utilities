@@ -13,7 +13,9 @@ VDATA = TarskiUtils::version_info("conf/version.yml")
 
 PUBPATH = CONFIG["pubpath"]
 TVERSION = ENV['v'] || VDATA.first.first
+TDIR = "tarski"
 SVN_URL = CONFIG["svn_url"]
+GIT_REPO = CONFIG["git_repo"]
 
 desc "Creates a zip archive, and updates the version feed and changelog."
 task :update => [:zip, :feed, :changelog]
@@ -69,10 +71,33 @@ task :changelog do
 end
 
 desc "Create a zip file of the lastest release in the downloads directory."
-task :zip do
-  puts "Downloading Tarski files..."
-  %x{svn export #{SVN_URL}/releases/#{TVERSION} tarski}
+task :zip => :download do
   puts "Creating zip file..."
-  %x{zip -rm #{PUBPATH}/downloads/tarski_#{TVERSION}.zip tarski}
+  %x{zip -rm #{PUBPATH}/downloads/tarski_#{TVERSION}.zip #{TDIR}}
   puts "Done."
+end
+
+desc "Export the latest release files."
+task :download do
+  %x{rm -rf #{TDIR}}
+  Rake::Task['git_export'].invoke
+end
+
+desc "Export the latest release from the Subversion repository."
+task :svn_export do
+  puts "Downloading Tarski files..."
+  %x{svn export #{SVN_URL}/releases/#{TVERSION} #{TDIR}}
+end
+
+desc "Export the latest release from a Git repository."
+task :git_export do
+  here = Dir.pwd
+  there = "#{here}/#{TDIR}"
+  puts "Cloning Git repository..."
+  %x{git clone #{GIT_REPO} #{there}}
+  Dir.chdir(there)
+  %x{git checkout -b #{TVERSION} #{TVERSION}}
+  puts "Pruning .git directory..."
+  %x{rm -rf #{there}/.git/}
+  Dir.chdir(here)
 end
