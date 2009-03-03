@@ -32,11 +32,16 @@ task :feed do
 end
 
 desc "Generate the hooks documentation page."
-task :hooks do
+task :hooks => :download do
   require 'erb'
   require 'lib/tarski_docs'
   
+  puts "Generating hooks documentation..."
   TarskiDocs.new(Dir.pwd + '/' + TDIR).read.write("#{PUBPATH}/hooks.html")
+  
+  puts "Cleaning up checked-out files..."
+  `rm -rf tarski/`
+  puts "Done."
 end
 
 desc "Generate a new changelog HTML file."
