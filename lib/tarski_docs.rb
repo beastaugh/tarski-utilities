@@ -7,7 +7,7 @@ class TarskiDocs
   end
   
   def read
-    @comments = @files.map do |file|
+    @hooks = @files.map do |file|
       comments = File.readlines(file).inject([0]) do |comments, line|
         comments[0] = 0 if line =~ /^\s+\*\/\s*$/m
         comments.last << line if comments.first === 1
@@ -21,9 +21,8 @@ class TarskiDocs
       end
       
       comments[1..-1]
-    end.inject([]) {|f, comments| comments.concat(f) }
-    
-    @hooks = @comments.inject([0]) do |hooks, comment|
+    end.inject([]) {|f, comments| comments.concat(f) }.
+    inject([0]) do |hooks, comment|
       hooks[0] = 0
       comment.each do |line|
         hooks[0] = 0 if line =~ /^\s+\*\s+@/m
@@ -39,7 +38,13 @@ class TarskiDocs
       end
       
       hooks
-    end[1..-1]
+    end[1..-1].inject({:actions => [], :filters => []}) do |hooks, hook|
+      name = hook.shift.split(/\s+/)
+      type = name.shift
+      hook = {:name => name.first, :description => hook.join(" ")}
+      (name.first == "action" ? hooks[:actions] : hooks[:filters]) << hook
+      hooks
+    end
   end
   
   def write
