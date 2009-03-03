@@ -1,11 +1,14 @@
+# Standard library
 require 'yaml'
 require 'time'
 
+# Gem libraries
 require 'rubygems'
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
+# Project libraries
 require 'lib/setup'
 
 CONFIG = YAML::load(File.open("conf/config.yml"))
@@ -28,9 +31,19 @@ task :feed do
   puts "Done."
 end
 
+desc "Generate the hooks documentation page."
+task :hooks do
+  require 'erb'
+  require 'lib/tarski_docs'
+  
+  Dir.chdir(Dir.pwd + '/' + TDIR)
+  
+  TarskiDocs.new(Dir.pwd).read
+end
+
 desc "Generate a new changelog HTML file."
 task :changelog do
-  require 'bluecloth'
+  require 'rdiscount'
   require 'rubypants'
   require 'hpricot'
   require 'open-uri'
