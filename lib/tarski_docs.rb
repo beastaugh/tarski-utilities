@@ -26,7 +26,7 @@ class TarskiDocs
     @hooks = @comments.inject([0]) do |hooks, comment|
       hooks[0] = 0
       comment.each do |line|
-        hooks[0] = 0 if line =~ /^\s+\*(\s+@|\s*$)/m
+        hooks[0] = 0 if line =~ /^\s+\*\s+@/m
         
         if line =~ /^\s+\*\s+@hook/
           hooks[0] = 1
