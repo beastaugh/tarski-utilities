@@ -1,5 +1,5 @@
 <%- @hooks.to_a.each do |name, hooks| -%>
-<div class="<%= name.to_s %>">
+<div id="hook-<%= name.to_s %>">
   <h3><%= name.to_s.capitalize %></h3>
   
   <%- hooks.each do |hook| -%>
