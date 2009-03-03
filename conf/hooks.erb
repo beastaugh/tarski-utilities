@@ -1,0 +1,13 @@
+<%- @hooks.to_a.each do |name, hooks| -%>
+<div class="<%= name.to_s %>">
+  <h3><%= name.to_s.capitalize %></h3>
+  
+  <%- hooks.each do |hook| -%>
+  <div class="hook">
+    <h4><code><%= hook[:name] %></code></h4>
+    <p><%= hook[:description] %></p>
+  </div>
+  
+  <%- end -%>
+</div>
+<%- end -%>

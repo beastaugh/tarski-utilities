@@ -36,9 +36,7 @@ task :hooks do
   require 'erb'
   require 'lib/tarski_docs'
   
-  Dir.chdir(Dir.pwd + '/' + TDIR)
-  
-  TarskiDocs.new(Dir.pwd).read
+  TarskiDocs.new(Dir.pwd + '/' + TDIR).read.write("#{PUBPATH}/hooks.html")
 end
 
 desc "Generate a new changelog HTML file."

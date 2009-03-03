@@ -2,7 +2,8 @@ require 'find'
 
 class TarskiDocs
   
-  def initialize(src_dir)
+  def initialize(src_dir, options = {})
+    @template = options[:template] || Dir.pwd + "/conf/hooks.erb"
     locate_src_files(src_dir)
   end
   
@@ -42,13 +43,20 @@ class TarskiDocs
       name = hook.shift.split(/\s+/)
       type = name.shift
       hook = {:name => name.first, :description => hook.join(" ")}
-      (name.first == "action" ? hooks[:actions] : hooks[:filters]) << hook
+      (type == "action" ? hooks[:actions] : hooks[:filters]) << hook
       hooks
     end
+    
+    self
   end
   
-  def write
-    # ...
+  def write(filepath)
+    template = File.open(@template, "r").read
+    rhtml = ERB.new(template, nil, "-")
+    
+    File.open(filepath, "w") do |target|
+      target.puts(rhtml.result(binding))
+    end
   end
   
   private
