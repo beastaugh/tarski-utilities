@@ -60,7 +60,7 @@ task :changelog do
   doc = open("#{SVN_URL}/trunk/CHANGELOG") do |file|
     # The changelog is provided in Markdown format, so it needs to be
     # passed through BlueCloth before being read into Hpricot.
-    Hpricot(BlueCloth::new(file.read).to_html)
+    Hpricot(Markdown.new(file.read).to_html)
   end
   
   vlinks = Array.new
