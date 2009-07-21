@@ -15,6 +15,7 @@ CONFIG = YAML::load(File.open("conf/config.yml"))
 VDATA = TarskiUtils::version_info("conf/version.yml")
 
 PUBPATH = CONFIG["pubpath"]
+PLUGINPATH = CONFIG["pluginpath"] || "#{PUBPATH}/wp/wp-content/plugins/tarskisite"
 TVERSION = ENV['v'] || VDATA.first.first
 TDIR = "tarski"
 SVN_URL = CONFIG["svn_url"]
@@ -84,6 +85,19 @@ task :changelog do
   end
   
   puts "Done."
+end
+
+desc "Add version data to the Tarski website plugin."
+task :plugin_version do
+  File.open("#{PLUGINPATH}/version.php", "w+") do |f|
+    f.print "<?php
+
+define('TARSKI_RELEASE_VERSION', #{TVERSION});
+define('TARSKI_RELEASE_LINK', '#{VDATA.first[1]['link']}');
+define('TARSKI_RELEASE_BRANCH', #{TVERSION});
+
+?>"
+  end
 end
 
 desc "Create a zip file of the lastest release in the downloads directory."
