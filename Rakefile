@@ -22,7 +22,7 @@ SVN_URL = CONFIG["svn_url"]
 GIT_REPO = CONFIG["git_repo"]
 
 desc "Creates a zip archive, and updates the version feed and changelog."
-task :update => [:zip, :feed, :changelog]
+task :update => [:zip, :feed, :changelog, :plugin_version]
 
 desc "Update the version feed to notify Tarski users of the new release."
 task :feed do
