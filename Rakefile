@@ -129,5 +129,6 @@ task :git_export do
   %x{git checkout -b #{TVERSION} #{TVERSION}}
   puts "Pruning .git directory..."
   %x{rm -rf #{there}/.git/}
+  %x{rm #{there}/.gitignore}
   Dir.chdir(here)
 end
