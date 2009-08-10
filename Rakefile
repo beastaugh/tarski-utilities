@@ -11,15 +11,19 @@ require 'rake/rdoctask'
 # Project libraries
 require 'lib/setup'
 
-CONFIG = YAML::load(File.open("conf/config.yml"))
-VDATA = TarskiUtils::version_info("conf/version.yml")
+VERSION_DATA   = TarskiUtils::version_info("conf/version.yml")
+PUBLICPATH     = "../public"
+PLUGINPATH     = "#{PUBLIC_PATH}/wp/wp-content/plugins/tarskisite"
+TARSKI_VERSION = ENV['v'] || VERSION_DATA.first.first
+TARSKI_DIR     = "tarski"
 
-PUBPATH = CONFIG["pubpath"]
-PLUGINPATH = CONFIG["pluginpath"] || "#{PUBPATH}/wp/wp-content/plugins/tarskisite"
-TVERSION = ENV['v'] || VDATA.first.first
-TDIR = "tarski"
-SVN_URL = CONFIG["svn_url"]
-GIT_REPO = CONFIG["git_repo"]
+SVN_URL        = "http://tarski.googlecode.com/svn"
+GIT_REPO       = "git://github.com/ionfish/tarski.git"
+
+FEED_INFO      = {
+  :url         => "http://tarskitheme.com/"
+  :title       => "Tarski update notification"
+  :author      => ["Benedict Eastaugh", "Chris Sternal-Johnson"]}
 
 desc "Creates a zip archive, and updates the version feed and changelog."
 task :update => [:zip, :feed, :changelog, :plugin_version]
@@ -28,7 +32,7 @@ desc "Update the version feed to notify Tarski users of the new release."
 task :feed do
   require 'lib/tarski_version'
   puts "Generating version feed..."  
-  TarskiVersion.new(VDATA, CONFIG["feed"]).publish_feed("#{PUBPATH}/version.atom")
+  TarskiVersion.new(VERSION_DATA, FEED_INFO).publish_feed("#{PUBLIC_PATH}/version.atom")
   puts "Done."
 end
 
@@ -38,7 +42,7 @@ task :hooks => :download do
   require 'lib/tarski_docs'
   
   puts "Generating hooks documentation..."
-  TarskiDocs.new(Dir.pwd + '/' + TDIR).read.write("#{PUBPATH}/hooks.html")
+  TarskiDocs.new(Dir.pwd + '/' + TARSKI_DIR).read.write("#{PUBLIC_PATH}/hooks.html")
   
   puts "Cleaning up checked-out files..."
   `rm -rf tarski/`
@@ -80,7 +84,7 @@ task :changelog do
   struct.at("#version-links").inner_html = vlinks.join("\n")
   struct.search("#version-links").after(doc.to_html)
   
-  File.open("#{PUBPATH}/changelog.html", "w+") do |changelog|
+  File.open("#{PUBLIC_PATH}/changelog.html", "w+") do |changelog|
     changelog.puts(RubyPants.new(struct.to_html).to_html)
   end
   
@@ -92,9 +96,9 @@ task :plugin_version do
   File.open("#{PLUGINPATH}/version.php", "w+") do |f|
     f.print "<?php
 
-define('TARSKI_RELEASE_VERSION', #{TVERSION});
-define('TARSKI_RELEASE_LINK', '#{VDATA.first[1]['link']}');
-define('TARSKI_RELEASE_BRANCH', #{TVERSION});
+define('TARSKI_RELEASE_VERSION', #{TARSKI_VERSION});
+define('TARSKI_RELEASE_LINK', '#{VERSION_DATA.first[1]['link']}');
+define('TARSKI_RELEASE_BRANCH', #{TARSKI_VERSION});
 
 ?>"
   end
@@ -103,30 +107,30 @@ end
 desc "Create a zip file of the lastest release in the downloads directory."
 task :zip => :download do
   puts "Creating zip file..."
-  %x{zip -rm #{PUBPATH}/downloads/tarski_#{TVERSION}.zip #{TDIR}}
+  %x{zip -rm #{PUBLIC_PATH}/downloads/tarski_#{TARSKI_VERSION}.zip #{TARSKI_DIR}}
   puts "Done."
 end
 
 desc "Export the latest release files."
 task :download do
-  %x{rm -rf #{TDIR}}
+  %x{rm -rf #{TARSKI_DIR}}
   Rake::Task['git_export'].invoke
 end
 
 desc "Export the latest release from the Subversion repository."
 task :svn_export do
   puts "Downloading Tarski files..."
-  %x{svn export #{SVN_URL}/releases/#{TVERSION} #{TDIR}}
+  %x{svn export #{SVN_URL}/releases/#{TARSKI_VERSION} #{TARSKI_DIR}}
 end
 
 desc "Export the latest release from a Git repository."
 task :git_export do
   here = Dir.pwd
-  there = "#{here}/#{TDIR}"
+  there = "#{here}/#{TARSKI_DIR}"
   puts "Cloning Git repository..."
   %x{git clone #{GIT_REPO} #{there}}
   Dir.chdir(there)
-  %x{git checkout -b #{TVERSION} #{TVERSION}}
+  %x{git checkout -b #{TARSKI_VERSION} #{TARSKI_VERSION}}
   puts "Pruning .git directory..."
   %x{rm -rf #{there}/.git/}
   %x{rm #{there}/.gitignore}
