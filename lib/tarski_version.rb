@@ -23,13 +23,13 @@ class TarskiVersion
     xml = Builder::XmlMarkup.new(:target => @file, :indent => 2)
     xml.instruct!
     xml.feed :xmlns => "http://www.w3.org/2005/Atom", "xml:lang" => "en-GB" do
-      xml.title     @config["title"]
-      xml.link      :rel => "alternate", :href => @config["url"]
-      xml.link      :rel => "self", :href => @config["url"] + File.basename(target)
-      xml.id        @config["url"]
+      xml.title     @config[:title]
+      xml.link      :rel => "alternate", :href => @config[:url]
+      xml.link      :rel => "self", :href => @config[:url] + File.basename(target)
+      xml.id        @config[:url]
       xml.updated   @datetime
 
-      @config["author"].each do |name|
+      @config[:author].each do |name|
         xml.author  { xml.name name }
       end
       

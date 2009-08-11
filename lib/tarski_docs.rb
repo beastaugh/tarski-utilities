@@ -3,7 +3,7 @@ require 'find'
 class TarskiDocs
   
   def initialize(src_dir, options = {})
-    @template = options[:template] || Dir.pwd + "/conf/hooks.erb"
+    @template = options[:template] || CONF_DIR + "hooks.erb"
     locate_src_files(src_dir)
   end
   
