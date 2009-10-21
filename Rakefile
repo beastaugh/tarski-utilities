@@ -53,7 +53,7 @@ task :hooks => [:co_working_copy, :pull_master] do
 end
 
 desc "Generate a new changelog HTML file."
-task :changelog do
+task :changelog => [:co_working_copy, :pull_master] do
   require 'rdiscount'
   require 'rubypants'
   require 'hpricot'
