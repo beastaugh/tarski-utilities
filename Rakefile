@@ -10,7 +10,7 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 
 # Project libraries
-require 'lib/setup'
+require './lib/setup'
 
 VERSION_DATA   = TarskiUtils::version_info("conf/version.yml")
 TARSKI_VERSION = ENV['v'] || VERSION_DATA.first.first
