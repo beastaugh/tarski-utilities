@@ -117,6 +117,7 @@ task :export do
   
   `rm -rf #{build}`        # Clean up any old exports
   `cp -R #{src} #{build}`  # Copy working tree to build directory
+  `rm #{build}/Rakefile`   # Remove Rakefile
   `rm -rf #{build}/.git`   # Remove repository
   `rm #{build}/.gitignore` # Remove dotfile
 end
