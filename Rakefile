@@ -93,7 +93,7 @@ task :plugin_version do
   File.open(PLUGIN_DIR + "version.php", "w+") do |f|
     f.print "<?php
 
-define('TARSKI_RELEASE_VERSION', ''#{TARSKI_VERSION}');
+define('TARSKI_RELEASE_VERSION', '#{TARSKI_VERSION}');
 define('TARSKI_RELEASE_LINK', '#{VERSION_DATA.first[1]['link']}');
 define('TARSKI_RELEASE_BRANCH', '#{TARSKI_VERSION}');
 
