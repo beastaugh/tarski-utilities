@@ -9,7 +9,9 @@ class TarskiDocs
   
   def read
     @hooks = @files.map do |file|
-      comments = File.readlines(file).inject([0]) do |comments, line|
+      lines = File.readlines(file).map {|s| s.force_encoding('utf-8') }
+      
+      comments = lines.inject([0]) do |comments, line|
         comments[0] = 0 if line =~ /^\s+\*\/\s*$/m
         comments.last << line if comments.first === 1
         
