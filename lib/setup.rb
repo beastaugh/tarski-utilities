@@ -1,3 +1,12 @@
+def require_lib(library)
+  begin
+    require library
+  rescue
+    puts "You need to install #{library} before running these Rake tasks."
+    Process.exit
+  end
+end
+
 module TarskiUtils
   
   def self.version_to_int(version)
@@ -24,7 +33,7 @@ module TarskiUtils
   def self.version_info(vfile)
     vdata = YAML::load(File.open(vfile))
     nvdata = {}
-  
+    
     vdata.each do |key, value|
       nvdata[key.to_s] = value
       value["datetime"] = value["datetime"].xmlschema unless value["datetime"].nil?

@@ -3,12 +3,6 @@ require 'yaml'
 require 'time'
 require 'pathname'
 
-# Gem libraries
-require 'rubygems'
-require 'rake'
-require 'rake/testtask'
-require 'rake/rdoctask'
-
 # Project libraries
 require './lib/setup'
 
@@ -16,15 +10,13 @@ VERSION_DATA   = TarskiUtils::version_info("conf/version.yml")
 TARSKI_VERSION = ENV['v'] || VERSION_DATA.first.first
 
 TARSKI_DIRNAME = "tarski"
-UTIL_DIR       = Pathname.new(__FILE__).dirname
+UTIL_DIR       = Pathname.new(File.dirname(__FILE__)).expand_path
 LIB_DIR        = UTIL_DIR + "lib"
 SRC_DIR        = UTIL_DIR + "src"
 CONF_DIR       = UTIL_DIR + "conf"
 BUILD_DIR      = UTIL_DIR + "build"
 PUBLIC_DIR     = UTIL_DIR + "../public"
-PLUGIN_DIR     = PUBLIC_DIR + "wp/wp-content/themes/tarski-site"
 
-SVN_URL        = "http://tarski.googlecode.com/svn"
 GIT_REPO       = "git://github.com/beastaugh/tarski.git"
 
 FEED_INFO      = {
@@ -32,32 +24,47 @@ FEED_INFO      = {
   :title       => "Tarski update notification",
   :author      => ["Benedict Eastaugh", "Chris Sternal-Johnson"]}
 
-desc "Creates a zip archive, and updates the version feed and changelog."
-task :update => [:zip, :feed, :changelog]
+desc "Creates a zip archive and publicises version update."
+task :update => [:zip, :version]
 
-desc "Update the version feed to notify Tarski users of the new release."
-task :feed do
+desc "Updates the changelog and API documentation."
+task :docs => [:changelog, :hooks]
+
+desc "Updates the version on the feed and website."
+task :version => [:feed_version, :site_version]
+
+# Update the version feed to notify Tarski users of the new release
+task :feed_version do
   require LIB_DIR + 'tarski_version'
   
   TarskiVersion.new(VERSION_DATA, FEED_INFO).publish_feed(PUBLIC_DIR + "version.atom")
 end
 
-desc "Generate the hooks documentation page."
+# Add version data to the Tarski website
+task :site_version do
+  File.open(PUBLIC_DIR + "version.php", "w+") do |f|
+    f.print "<?php
+
+define('TARSKI_RELEASE_VERSION', '#{TARSKI_VERSION}');
+define('TARSKI_RELEASE_LINK', '#{VERSION_DATA.first[1]['link']}');
+define('TARSKI_RELEASE_BRANCH', '#{TARSKI_VERSION}');
+
+?>"
+  end
+end
+
+# Generate the hooks documentation page
 task :hooks => [:co_working_copy, :pull_master] do
   require 'erb'
   require LIB_DIR + 'tarski_docs'
   
   TarskiDocs.new(SRC_DIR + TARSKI_DIRNAME).read.write(PUBLIC_DIR + "hooks.html")
-  
-  `rm -rf tarski/`
 end
 
-desc "Generate a new changelog HTML file."
+# Generate a new changelog HTML file
 task :changelog => [:co_working_copy, :pull_master] do
-  require 'rdiscount'
-  require 'rubypants'
-  require 'hpricot'
-  require 'open-uri'
+  # Required libraries
+  ['rdiscount', 'rubypants', 'hpricot', 'open-uri'].each {|lib| require_lib(lib) }
   
   struct = File.open(UTIL_DIR + "conf/changelog-structure.html", "r") do |file|
     Hpricot(file.read)
@@ -91,45 +98,30 @@ task :changelog => [:co_working_copy, :pull_master] do
   end
 end
 
-desc "Add version data to the Tarski website plugin."
-task :plugin_version do
-  File.open(PLUGIN_DIR + "version.php", "w+") do |f|
-    f.print "<?php
-
-define('TARSKI_RELEASE_VERSION', '#{TARSKI_VERSION}');
-define('TARSKI_RELEASE_LINK', '#{VERSION_DATA.first[1]['link']}');
-define('TARSKI_RELEASE_BRANCH', '#{TARSKI_VERSION}');
-
-?>"
+task :co_working_copy do
+  if Dir.glob(SRC_DIR + TARSKI_DIRNAME).empty?
+    `cd #{SRC_DIR}; git clone #{GIT_REPO} #{TARSKI_DIRNAME}`
   end
 end
 
-task :co_working_copy do
-  Dir.chdir(SRC_DIR)
-  `git clone #{GIT_REPO} #{TARSKI_DIRNAME}` if Dir.glob(TARSKI_DIRNAME).empty?
-end
-
 task :pull_master do
-  Dir.chdir(SRC_DIR + TARSKI_DIRNAME)
-  `git pull origin master`
+  `cd #{SRC_DIR + TARSKI_DIRNAME}; git pull -q origin master`
 end
 
 task :export do
   src   = SRC_DIR   + TARSKI_DIRNAME
   build = BUILD_DIR + TARSKI_DIRNAME
   
-  `rm -rf #{build}`        # Clean up any old exports
-  `cp -R #{src} #{build}`  # Copy working tree to build directory
-  `rm #{build}/Rakefile`   # Remove Rakefile
-  `rm -rf #{build}/.git`   # Remove repository
-  `rm #{build}/.gitignore` # Remove dotfile
+  FileUtils.rm_rf build
+  FileUtils.cp_r  src, build
+  FileUtils.rm_rf build + ".git"
+  FileUtils.rm    [build + "Rakefile", build + ".gitignore"]
 end
 
 desc "Create a zip file of the lastest release in the downloads directory."
 task :zip => [:co_working_copy, :pull_master, :export] do
-  filename = "tarski_" + TARSKI_VERSION + ".zip"
+  src_path    = BUILD_DIR  + TARSKI_DIRNAME
+  target_path = PUBLIC_DIR + "downloads/tarski_#{TARSKI_VERSION}.zip"
   
-  Dir.chdir(BUILD_DIR)
-  `zip -rm #{PUBLIC_DIR + "downloads/" + filename} \
-    #{TARSKI_DIRNAME}`
+  `cd #{src_path}; zip -rq #{target_path} .`
 end
