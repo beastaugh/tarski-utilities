@@ -74,9 +74,12 @@ task :changelog => [:co_working_copy, :pull_master] do
   (doc/"h1").remove
   
   (doc/"h3").each do |header|
-    version = header.inner_html.scan(/^Version (\d(?:\.\d)+)/)[0][0]
-    header.set_attribute('id', "v#{version}")
-    vlinks << "<li><a href=\"#v#{version}\">Version #{version}</a></li>"
+    name = header.inner_html.scan(/^[\w\s\.]+/).first.strip
+    matches = name.scan(/^Version ([\d\.]+)$/)[0]
+    version = matches ? matches[0] : name
+    id = "v" + version.downcase
+    header.set_attribute('id', id)
+    vlinks << "<li><a href=\"##{id}\">#{version}</a></li>"
   end
   
   struct.at("#changelog-updated").inner_html = "Last updated #{Time.now.strftime("%B %d %Y")}"
