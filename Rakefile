@@ -16,9 +16,7 @@ SRC_DIR        = UTIL_DIR + "src"
 CONF_DIR       = UTIL_DIR + "conf"
 BUILD_DIR      = UTIL_DIR + "build"
 PUBLIC_DIR     = UTIL_DIR + "../public"
-
 GIT_REPO       = "git://github.com/beastaugh/tarski.git"
-
 FEED_INFO      = {
   :url         => "http://tarskitheme.com/",
   :title       => "Tarski update notification",
