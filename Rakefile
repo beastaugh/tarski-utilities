@@ -115,7 +115,7 @@ task :export do
   FileUtils.rm_rf build
   FileUtils.cp_r  src, build
   FileUtils.rm_rf build + ".git"
-  FileUtils.rm    [build + "Rakefile", build + ".gitignore"]
+  FileUtils.rm    [build + "Rakefile"]
 end
 
 desc "Create a zip file of the lastest release in the downloads directory."
