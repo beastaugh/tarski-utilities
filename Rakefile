@@ -70,7 +70,7 @@ task :changelog => [:co_working_copy, :pull_master] do
     Hpricot(file.read)
   end
   
-  doc = open(SRC_DIR + TARSKI_DIRNAME + "CHANGELOG") do |file|
+  doc = open(SRC_DIR + TARSKI_DIRNAME + "changelog.txt") do |file|
     # The changelog is provided in Markdown format, so it needs to be
     # passed through BlueCloth before being read into Hpricot.
     Hpricot(Markdown.new(file.read).to_html)
